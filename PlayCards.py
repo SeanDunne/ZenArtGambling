@@ -2,12 +2,7 @@ from Cards import Card, Deck
 
 suits = ['spades', 'clubs', 'hearts', 'diamonds']
 ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']
-'''
-l =([Card(suit, rank) for suit in suits for rank in ranks])
 
-for card in l:
-    print(card)
-'''
 class PlayCards():
 
     def __init__(self):
