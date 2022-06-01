@@ -9,8 +9,10 @@ class PlayCards():
     def __init__(self):
         self.pot_size = 0
         self.bet_size = 0
+        self.draws = 0
         self.correct = 0
-        self.success_ratio = 0
+        self.incorrect = 0
+        self.success_rate = 0
 
     def setup_deck(self):
         self.dealer_deck = Deck()
@@ -69,6 +71,7 @@ class PlayCards():
             if colour not in ('r', 'b'):
                 print("Invalid colour selection.")
                 self.colour_guess(colour_selector, auto_fin)
+            return colour
 
     def make_bet(self, colour, bet_size):
 
@@ -79,21 +82,26 @@ class PlayCards():
         else:
             colour_str = 'black'
 
-        print("---Drawing a card---")
+        print("----------------Drawing a card----------------")
         print("You bet {} that the card will be {}".format(bet_size, colour_str))
         print("The card is: {}".format(drawn_card))
+        
+        self.cards_dealt.add_card(self.dealer_deck.remove_card())
+        self.draws += 1
 
         if drawn_card.colour == colour:
             self.pot_size += bet_size
             print("Correct! You win {}.".format(bet_size))
+            self.correct += 1
 
         else:
             self.pot_size -= bet_size
             print("Incorrect.. You lose {}.".format(bet_size))
+            self.incorrect += 1
+
+        self.success_rate = (self.correct/self.draws) * 100
         
-        self.cards_dealt.add_card(self.dealer_deck.remove_card())
-        
-    def play(self, colour_selector=None, bet_style=None, auto_fin=False, slow=True, whole=True):
+    def play(self, colour_selector="smart", bet_style="half", auto_fin=True, slow=False, whole=True):
 
         self.setup_deck()
         self.bet_style = bet_style
@@ -113,17 +121,19 @@ class PlayCards():
                 playing = False
                 break
 
-            ##TODO display stats ##
+            if slow:
+                print("Your bet success rate is: {}%".format(self.success_rate))
+
             print("Your current pot size is: {}.".format(self.pot_size))
             self.dealer_deck.show_colours()
-
             if slow:
-                q = input("----------------------------------------------")
+                input("----------------------------------------------")
             else:
                 print("----------------------------------------------")
         
         print("You finished with a pot size of: {}".format(self.pot_size))
         
 if __name__ == '__main__':
+
     game = PlayCards()
     game.play()
